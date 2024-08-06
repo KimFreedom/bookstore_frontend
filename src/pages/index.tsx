@@ -19,11 +19,13 @@ interface Book {
 export default function Home() {
     const [books, setBooks] = useState<Book[] | undefined>(undefined);
     const [totalPages, setTotalPages] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
     const { page = '1', search = '' } = router.query;
 
     useEffect(() => {
         const loadBooks = async () => {
+            setIsLoading(true);
             try {
                 const data = await fetchBooks(Number(page), 10, search as string);
                 setBooks(data.books);
@@ -31,6 +33,8 @@ export default function Home() {
             } catch (error) {
                 console.error('Error fetching books:', error);
                 setBooks([]);
+            } finally {
+                setIsLoading(false);
             }
         };
         loadBooks();
@@ -47,7 +51,7 @@ export default function Home() {
             <Link href="/books/add">
                 <button>Add New Book</button>
             </Link>
-            <BookList books={books} />
+            <BookList books={books} isLoading={isLoading} />
             <Pagination 
                 currentPage={Number(page)}
                 totalPages={totalPages}

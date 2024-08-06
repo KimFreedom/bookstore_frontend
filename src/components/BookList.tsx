@@ -12,9 +12,14 @@ interface Book {
 
 interface BookListProps {
     books: Book[] | undefined;
+    isLoading: boolean;
 }
 
-const BookList: React.FC<BookListProps> = ({ books }) => {
+const BookList: React.FC<BookListProps> = ({ books, isLoading }) => {
+    if (isLoading) {
+        return <div>Now loading...</div>;
+    }
+    
     if (!books || books.length === 0) {
         return <div>No books available.</div>;
     }
